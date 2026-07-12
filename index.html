@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FcRom - Giải pháp Android Tất Cả Trong Một</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        dark: '#030303',
+                        surface: '#0a0a0a',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'marquee': 'marquee 40s linear infinite',
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient-x': 'gradientX 15s ease infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(30px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        },
+                        gradientX: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030303;
+            color: #ffffff;
+            overflow-x: hidden;
+            /* Grid Pattern Background for Pro Tech Vibe */
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Luminous Glassmorphism - Trong suốt, tinh khiết */
+        .glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .glass-card:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Advanced Typography */
+        .text-gradient {
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-blue {
+            background: linear-gradient(135deg, #93C5FD 0%, #2563EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient-x 5s ease infinite;
+        }
+
+        /* Glowing Orbs */
+        .orb-1 { position: absolute; top: -10%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 60%); filter: blur(80px); z-index: -1; pointer-events: none; }
+        .orb-2 { position: absolute; top: 40%; right: -20%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(147,197,253,0.08) 0%, transparent 60%); filter: blur(80px); z-index: -1; pointer-events: none; }
+
+        /* Scroll Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030303; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        /* Fade Edges for Marquee */
+        .fade-edges { mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-white">
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="orb-1 animate-pulse-slow"></div>
+    <div class="orb-2"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 border-b border-transparent" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer group">
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-xl glass border-white/20 group-hover:border-blue-500/50 transition-all">
+                    <img src="icon.png" alt="FcRom" class="w-6 h-6" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjU2M0VCIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyTDExIDE1aDJsLTEgMTMtNy0xM2gybDEtMTN6Ii8+PC9zdmc+'">
+                </div>
+                <span class="font-bold text-xl tracking-tight text-white group-hover:text-blue-400 transition-colors">FcRom</span>
+            </div>
+            <div class="hidden md:flex items-center gap-10 text-sm text-gray-400 font-medium">
+                <a href="#features" class="hover:text-white transition-colors">Tính năng</a>
+                <a href="#how-it-works" class="hover:text-white transition-colors">Cách hoạt động</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Bảng giá</a>
+            </div>
+            <div>
+                <a href="https://github.com/giaphuocklg2-commits/bootstrap/releases/download/rele%C3%A1e/FcRomBootstrap.exe" target="_blank" class="glass px-6 py-2.5 rounded-full text-sm font-semibold text-white hover:bg-white/10 transition-all border border-white/10 hover:border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    Tải bản Beta
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-20 overflow-hidden flex flex-col items-center justify-center min-h-screen">
+        <div class="max-w-5xl mx-auto px-6 text-center z-10">
+            
+            <a href="#roadmap" class="inline-flex items-center gap-2 glass px-5 py-2 rounded-full text-xs font-semibold text-blue-400 mb-8 animate-fade-in-up border border-blue-500/20 hover:bg-blue-500/10 cursor-pointer transition-all shadow-[0_0_20px_rgba(37,99,235,0.15)]" style="animation-delay: 0.1s;">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                </span>
+                Phát hành Version 1.0.0 (Beta)
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+            </a>
+            
+            <h1 class="text-6xl md:text-[5.5rem] lg:text-[6.5rem] font-extrabold tracking-tighter mb-8 animate-fade-in-up text-gradient leading-[1.1]" style="animation-delay: 0.2s;">
+                Sức mạnh vô hạn.<br/>
+                <span class="text-gradient-blue inline-block pb-2">Tất cả trong một.</span>
+            </h1>
+            
+            <p class="text-lg md:text-2xl text-gray-400 font-light mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up" style="animation-delay: 0.3s;">
+                Công cụ tối thượng dành cho người yêu thích Android. Unlock Bootloader, Flash ROM, cài đặt Driver và hàng loạt tiện ích với hướng dẫn tiếng Việt 100%.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-in-up" style="animation-delay: 0.4s;">
+                <a href="https://github.com/giaphuocklg2-commits/bootstrap/releases/download/rele%C3%A1e/FcRomBootstrap.exe" target="_blank" class="w-full sm:w-auto px-10 py-4 rounded-2xl bg-primary hover:bg-blue-500 text-white font-semibold transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_50px_rgba(37,99,235,0.6)] flex items-center justify-center gap-3 text-lg group">
+                    <i data-lucide="download-cloud" class="w-5 h-5 group-hover:-translate-y-1 transition-transform"></i> Tải ngay cho Windows
+                </a>
+                <a href="#features" class="w-full sm:w-auto px-10 py-4 rounded-2xl glass hover:bg-white/10 text-white font-medium transition-all flex items-center justify-center gap-3 text-lg border border-white/10">
+                    Khám phá tính năng
+                </a>
+            </div>
+            
+            <p class="text-gray-600 text-sm mt-6 animate-fade-in-up" style="animation-delay: 0.5s;">Tương thích hoàn toàn với Windows 10 & 11.</p>
+        </div>
+    </section>
+
+    <!-- Infinite Marquee: ROMs & Tools -->
+    <section class="py-12 border-y border-white/5 bg-[#0a0a0a]/50 relative z-10 overflow-hidden backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 mb-8">
+            <p class="text-center text-sm font-bold text-gray-500 uppercase tracking-[0.3em]">Hỗ trợ kho ROM khổng lồ & Công cụ chính thức</p>
+        </div>
+        
+        <div class="relative flex overflow-x-hidden fade-edges group">
+            <div class="animate-marquee whitespace-nowrap flex items-center gap-8 group-hover:[animation-play-state:paused]">
+                <!-- Dàn logo 1 -->
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://raw.githubusercontent.com/LineageOS/android_packages_apps_Settings/lineage-20/res/mipmap-xxhdpi/ic_launcher.png" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="LineageOS">
+                    <span class="text-base font-medium text-gray-300">LineageOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/32014022?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="PixelOS">
+                    <span class="text-base font-medium text-gray-300">PixelOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/51139265?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="Evolution X">
+                    <span class="text-base font-medium text-gray-300">Evolution X</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center"><i data-lucide="zap" class="w-3.5 h-3.5 text-orange-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">HyperOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center"><i data-lucide="cpu" class="w-3.5 h-3.5 text-blue-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">Xiaomi.eu</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/108398414?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="RisingOS">
+                    <span class="text-base font-medium text-gray-300">RisingOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer mr-8">
+                    <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center"><i data-lucide="terminal" class="w-3.5 h-3.5 text-green-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">ADB Platform Tools</span>
+                </div>
+            </div>
+
+            <!-- Clone để lặp vô tận -->
+            <div class="animate-marquee whitespace-nowrap flex items-center gap-8 group-hover:[animation-play-state:paused]" aria-hidden="true">
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://raw.githubusercontent.com/LineageOS/android_packages_apps_Settings/lineage-20/res/mipmap-xxhdpi/ic_launcher.png" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="LineageOS">
+                    <span class="text-base font-medium text-gray-300">LineageOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/32014022?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="PixelOS">
+                    <span class="text-base font-medium text-gray-300">PixelOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/51139265?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="Evolution X">
+                    <span class="text-base font-medium text-gray-300">Evolution X</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <div class="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center"><i data-lucide="zap" class="w-3.5 h-3.5 text-orange-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">HyperOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center"><i data-lucide="cpu" class="w-3.5 h-3.5 text-blue-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">Xiaomi.eu</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                    <img src="https://avatars.githubusercontent.com/u/108398414?s=200&v=4" class="w-6 h-6 rounded-full grayscale group-hover:grayscale-0 transition-all" alt="RisingOS">
+                    <span class="text-base font-medium text-gray-300">RisingOS</span>
+                </div>
+                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-white/5 hover:border-blue-500/40 hover:bg-blue-500/10 transition-colors cursor-pointer mr-8">
+                    <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center"><i data-lucide="terminal" class="w-3.5 h-3.5 text-green-500"></i></div>
+                    <span class="text-base font-medium text-gray-300">ADB Platform Tools</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="py-12 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center reveal">
+                <div>
+                    <div class="text-3xl md:text-4xl font-bold text-white mb-2">15+</div>
+                    <div class="text-sm text-gray-400 font-medium">Hãng điện thoại hỗ trợ</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-bold text-white mb-2">100+</div>
+                    <div class="text-sm text-gray-400 font-medium">Bản ROM được tổng hợp</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-bold text-gradient-blue mb-2">1 Click</div>
+                    <div class="text-sm text-gray-400 font-medium">Tải xuống & Cài đặt</div>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-bold text-white mb-2">100%</div>
+                    <div class="text-sm text-gray-400 font-medium">An toàn & Sạch sẽ</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Grid Features Section -->
+    <section id="features" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Trải nghiệm vọc vạch <br/><span class="text-gradient-blue">chưa bao giờ dễ đến thế.</span></h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">Thiết kế đột phá giúp bạn kiểm soát hoàn toàn thiết bị của mình mà không cần phải tìm kiếm tài liệu rải rác trên mạng.</p>
+            </div>
+            
+            <!-- Bento Box Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[280px]">
+                
+                <!-- Box 1: Span 2 cols -->
+                <div class="glass glass-card rounded-3xl p-8 md:col-span-2 flex flex-col justify-between relative overflow-hidden reveal group">
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-blue-500/10 blur-3xl rounded-full group-hover:bg-blue-500/20 transition-all"></div>
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 mb-6">
+                            <i data-lucide="unlock" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Chuyên gia Unlock Bootloader</h3>
+                        <p class="text-gray-400 text-lg max-w-md">Hướng dẫn chi tiết, step-by-step cho từng dòng máy Xiaomi, Redmi, POCO. Đi kèm công cụ Mi Unlock và tài khoản Bypass (nếu có).</p>
+                    </div>
+                </div>
+
+                <!-- Box 2 -->
+                <div class="glass glass-card rounded-3xl p-8 flex flex-col justify-between reveal group" style="transition-delay: 100ms;">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 mb-6">
+                            <i data-lucide="cpu" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Auto Driver</h3>
+                        <p class="text-gray-400">Tự động nhận diện Windows và cài đặt đủ bộ Fastboot, ADB, Qualcomm, MTK.</p>
+                    </div>
+                </div>
+
+                <!-- Box 3 -->
+                <div class="glass glass-card rounded-3xl p-8 flex flex-col justify-between reveal group" style="transition-delay: 200ms;">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 mb-6">
+                            <i data-lucide="mouse-pointer-click" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Tải Tool 1-Click</h3>
+                        <p class="text-gray-400">Mi Flash, SP Flash Tool, Odin luôn sẵn sàng với bản mới nhất.</p>
+                    </div>
+                </div>
+
+                <!-- Box 4: Span 2 cols -->
+                <div class="glass glass-card rounded-3xl p-8 md:col-span-2 flex flex-col justify-between relative overflow-hidden reveal group">
+                    <div class="absolute right-0 bottom-0 w-80 h-80 bg-purple-500/10 blur-3xl rounded-full group-hover:bg-purple-500/20 transition-all"></div>
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 mb-6">
+                            <i data-lucide="layers" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Thư viện ROM khổng lồ & Sạch</h3>
+                        <p class="text-gray-400 text-lg max-w-md">Từ ROM Global, EEA, cho đến các bản mod tinh chỉnh như Xiaomi.eu, PixelOS. Tất cả đều được get link trực tiếp tốc độ cao.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" class="py-24 relative bg-surface border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">Đơn giản hóa mọi quy trình</h2>
+                <p class="text-gray-400 text-lg">Chỉ với 3 bước, chiếc điện thoại của bạn đã sẵn sàng cho một hệ điều hành mới.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+                <!-- Line connecting steps (Desktop only) -->
+                <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+
+                <div class="flex flex-col items-center text-center reveal relative z-10">
+                    <div class="w-24 h-24 rounded-full glass border border-blue-500/30 flex items-center justify-center text-3xl font-bold text-blue-400 mb-6 shadow-[0_0_30px_rgba(37,99,235,0.2)]">1</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Kết nối thiết bị</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Cắm cáp, bật Debugging. FcRom tự động quét, nhận diện dòng máy và cài driver còn thiếu.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center reveal relative z-10" style="transition-delay: 100ms;">
+                    <div class="w-24 h-24 rounded-full glass border border-white/20 flex items-center justify-center text-3xl font-bold text-white mb-6 bg-[#0a0a0a]">2</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Chọn ROM & Tải xuống</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Duyệt qua danh sách ROM tương thích 100% với máy của bạn. Tải max speed qua server VIP.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center reveal relative z-10" style="transition-delay: 200ms;">
+                    <div class="w-24 h-24 rounded-full glass border border-white/20 flex items-center justify-center text-3xl font-bold text-white mb-6 bg-[#0a0a0a]">3</div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Làm theo hướng dẫn</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Mở tab hướng dẫn tiếng Việt. Flash qua Fastboot hoặc Recovery cực kì an toàn và chi tiết.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Testimonials -->
+    <section class="py-24 relative overflow-hidden bg-gradient-to-b from-transparent to-[#0a0a0a]/80">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">Cộng đồng nói gì về FcRom</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass p-8 rounded-3xl reveal">
+                    <div class="flex gap-1 text-yellow-500 mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Trước đây mỗi lần up ROM là phải lên XDA đọc cả buổi tiếng Anh, giờ có tool này get link tải 1 phát xong luôn, hướng dẫn chi tiết tận răng."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center font-bold">H</div>
+                        <div>
+                            <div class="font-medium text-white text-sm">Hoàng Nguyễn</div>
+                            <div class="text-xs text-gray-500">Dùng POCO F3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-8 rounded-3xl reveal" style="transition-delay: 100ms;">
+                    <div class="flex gap-1 text-yellow-500 mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Bỏ 299k ra mua gói Lifetime thực sự đáng đồng tiền bát gạo. Tool nhận driver siêu mượt, giao diện thì quá đẹp so với mấy tool cổ lỗ sĩ."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-purple-900 flex items-center justify-center font-bold">T</div>
+                        <div>
+                            <div class="font-medium text-white text-sm">Trần Lê Tuấn</div>
+                            <div class="text-xs text-gray-500">Kỹ thuật viên Mobile</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-8 rounded-3xl reveal" style="transition-delay: 200ms;">
+                    <div class="flex gap-1 text-yellow-500 mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-500"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Cứu máy bị bootloop 2 lần nhờ có hướng dẫn Fix lỗi trong App. Cực kì khuyên dùng cho bạn nào mới tập tành vọc vạch."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center font-bold">M</div>
+                        <div>
+                            <div class="font-medium text-white text-sm">Minh Phạm</div>
+                            <div class="text-xs text-gray-500">Dùng Redmi Note 12</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Đầu tư nhỏ. <span class="text-gradient-blue">Quyền lực lớn.</span></h2>
+                <p class="text-gray-400 text-xl max-w-2xl mx-auto">Chọn gói phù hợp với nhu cầu vọc vạch của bạn. Minh bạch, không chi phí ẩn.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Free -->
+                <div class="glass p-8 rounded-[2rem] flex flex-col reveal hover:border-white/20 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-white mb-2">Free</h3>
+                    <p class="text-gray-400 text-sm mb-6 h-10">Dành cho người mới bắt đầu tìm hiểu.</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-5xl font-bold">0₫</span>
+                    </div>
+                    <ul class="flex-1 space-y-4 mb-8 text-sm text-gray-300">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-gray-400 shrink-0"></i> <span>Xem toàn bộ hướng dẫn</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-gray-400 shrink-0"></i> <span>Danh sách Link ROM & Tool</span></li>
+                        <li class="flex items-start gap-3 opacity-40"><i data-lucide="minus" class="w-5 h-5 shrink-0"></i> <span>Tốc độ tải chậm (Giới hạn)</span></li>
+                        <li class="flex items-start gap-3 opacity-40"><i data-lucide="minus" class="w-5 h-5 shrink-0"></i> <span>Chứa quảng cáo</span></li>
+                    </ul>
+                    <button onclick="showContactPopup()" class="w-full py-4 rounded-xl glass hover:bg-white/10 transition-all font-semibold text-sm border border-white/10">Bắt đầu miễn phí</button>
+                </div>
+
+                <!-- Basic -->
+                <div class="glass p-8 rounded-[2rem] flex flex-col reveal hover:border-white/20 transition-all duration-300" style="transition-delay: 100ms;">
+                    <h3 class="text-xl font-semibold text-blue-400 mb-2">Basic</h3>
+                    <p class="text-gray-400 text-sm mb-6 h-10">Tốc độ cao hơn, không rườm rà.</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-5xl font-bold">29k</span>
+                        <span class="text-gray-500 font-medium">/tháng</span>
+                    </div>
+                    <ul class="flex-1 space-y-4 mb-8 text-sm text-gray-300">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Tải qua server VIP cao tốc</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Tải Tool trực tiếp trong App</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Hoàn toàn không quảng cáo</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Cập nhật tính năng sớm</span></li>
+                    </ul>
+                    <button onclick="showContactPopup()" class="w-full py-4 rounded-xl glass hover:bg-white/10 transition-all font-semibold text-sm border border-white/20">Đăng ký Basic</button>
+                </div>
+
+                <!-- Pro (Most Popular) -->
+                <div class="glass p-8 rounded-[2rem] flex flex-col reveal relative border border-blue-500/50 bg-blue-500/10 shadow-[0_0_40px_rgba(37,99,235,0.2)] transform md:-translate-y-4 hover:scale-[1.03] transition-all duration-300" style="transition-delay: 200ms;">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-400 text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.5)] text-white tracking-wide">
+                        PHỔ BIẾN NHẤT
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Pro</h3>
+                    <p class="text-blue-200/70 text-sm mb-6 h-10">Tự động hóa hoàn toàn quy trình.</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-5xl font-bold text-white">59k</span>
+                        <span class="text-gray-400 font-medium">/tháng</span>
+                    </div>
+                    <ul class="flex-1 space-y-4 mb-8 text-sm text-gray-100">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span class="font-semibold text-white">Toàn bộ tính năng gói Basic</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Tự động cài ADB/Driver (1-Click)</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Phát hiện thiết bị tự động</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Check SHA-256 an toàn file</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 shrink-0"></i> <span>Bắn thông báo có ROM mới</span></li>
+                    </ul>
+                    <button onclick="showContactPopup()" class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-all font-semibold text-sm shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)]">Nâng cấp Pro</button>
+                </div>
+
+                <!-- Lifetime -->
+                <div class="glass p-8 rounded-[2rem] flex flex-col reveal border border-white/10 relative hover:border-white/30 transition-all duration-300 bg-white/5" style="transition-delay: 300ms;">
+                    <div class="absolute -top-4 right-6 bg-white text-black text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.3)] tracking-wide">
+                        MUA 1 LẦN
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Lifetime</h3>
+                    <p class="text-gray-400 text-sm mb-6 h-10">Đầu tư một lần, sử dụng trọn đời.</p>
+                    <div class="flex items-baseline gap-1 mb-8">
+                        <span class="text-5xl font-bold text-gradient-blue">299k</span>
+                    </div>
+                    <ul class="flex-1 space-y-4 mb-8 text-sm text-gray-300">
+                        <li class="flex items-start gap-3"><i data-lucide="infinity" class="w-5 h-5 text-white shrink-0"></i> <span class="font-semibold text-white">Sở hữu vĩnh viễn không giới hạn</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-white shrink-0"></i> <span>Mở khóa toàn bộ tính năng PRO</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-white shrink-0"></i> <span>Update tính năng mới miễn phí</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-white shrink-0"></i> <span>Ưu tiên Support kỹ thuật 1:1</span></li>
+                    </ul>
+                    <button onclick="showContactPopup()" class="w-full py-4 rounded-xl bg-white text-black hover:bg-gray-200 transition-all font-bold text-sm shadow-[0_0_20px_rgba(255,255,255,0.2)]">Mua đứt trọn đời</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Big Call To Action Banner -->
+    <section class="py-20 px-6 max-w-6xl mx-auto reveal">
+        <div class="glass rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(37,99,235,0.1)]">
+            <!-- Background glow effect inside banner -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-600/20 blur-[100px] z-0"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">Sẵn sàng vọc vạch?</h2>
+                <p class="text-xl text-blue-100/70 mb-10 max-w-2xl mx-auto">Tham gia ngay cùng hàng ngàn người dùng khác, tối ưu hóa sức mạnh chiếc điện thoại Android của bạn ngay hôm nay.</p>
+                <a href="https://github.com/giaphuocklg2-commits/bootstrap/releases/download/rele%C3%A1e/FcRomBootstrap.exe" target="_blank" class="inline-block px-10 py-5 rounded-full bg-white text-black hover:scale-105 font-bold text-lg transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                    Tải FcRom Bản Beta
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <footer class="border-t border-white/10 bg-[#020202] pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <span class="font-bold text-2xl tracking-tight text-white">FcRom</span>
+                        <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md ml-2 border border-blue-500/30">Beta 1.0</span>
+                    </div>
+                    <p class="text-gray-500 text-sm max-w-sm leading-relaxed">
+                        Giải pháp tối thượng cho cộng đồng Android. Chuyên nghiệp hóa quy trình Unlock, Flash ROM và tối ưu thiết bị.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Sản phẩm</h4>
+                    <ul class="space-y-4 text-sm text-gray-500">
+                        <li><a href="https://github.com/giaphuocklg2-commits/bootstrap/releases/download/rele%C3%A1e/FcRomBootstrap.exe" class="hover:text-blue-400 transition-colors">Tải xuống Windows</a></li>
+                        <li><a href="#pricing" class="hover:text-blue-400 transition-colors">Bảng giá</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Changelog</a></li>
+                        <li><a href="#roadmap" class="hover:text-blue-400 transition-colors">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Hỗ trợ</h4>
+                    <ul class="space-y-4 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Tài liệu hướng dẫn</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Cộng đồng Telegram</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Điều khoản dịch vụ</a></li>
+                        <li><a href="#" class="hover:text-blue-400 transition-colors">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-gray-600 text-sm">Copyright © 2026 FcRom. All rights reserved.</p>
+                <div class="flex items-center gap-4 text-gray-500">
+                    <a href="#" class="hover:text-white transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <div class="h-4 w-px bg-white/10 mx-2"></div>
+                    <p class="text-xs flex items-center gap-1">Made with <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> cho Android</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Popup Modal -->
+    <div id="contactModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="glass p-8 rounded-3xl max-w-md w-full mx-4 transform scale-95 transition-transform duration-300 border border-white/20 relative">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Liên hệ Mua Gói</h3>
+                <button onclick="closeContactPopup()" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="text-gray-300 mb-6 text-sm">Để đăng ký gói, mua bản quyền hoặc mua mã nguồn, vui lòng liên hệ trực tiếp với tác giả qua các kênh sau:</p>
+            <div class="space-y-4">
+                <a href="https://zalo.me/056710709" target="_blank" class="flex items-center gap-4 p-4 rounded-2xl glass hover:bg-white/10 transition-all border border-white/10 group">
+                    <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center font-bold text-white text-xl group-hover:scale-110 transition-transform">Z</div>
+                    <div>
+                        <div class="font-semibold text-white">Zalo</div>
+                        <div class="text-sm text-gray-400">056710709</div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 ml-auto text-gray-500 group-hover:text-white transition-colors"></i>
+                </a>
+                <a href="https://www.facebook.com/HGP117" target="_blank" class="flex items-center gap-4 p-4 rounded-2xl glass hover:bg-white/10 transition-all border border-white/10 group">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-white">Facebook</div>
+                        <div class="text-sm text-gray-400">HGP117</div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 ml-auto text-gray-500 group-hover:text-white transition-colors"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buy Source Code Button -->
+    <a href="javascript:showContactPopup()" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 glass px-5 py-3 rounded-full text-sm font-semibold text-gray-200 border border-white/20 hover:border-blue-500/50 hover:bg-blue-500/10 hover:text-white transition-all shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.3)] group cursor-pointer">
+        <i data-lucide="code" class="w-4 h-4 text-blue-400 group-hover:text-blue-300"></i>
+        Mua Full Mã Nguồn (1.199.000đ)
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // Advanced Reveal Animation with Threshold
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100; // Trigger threshold
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+
+        // Navbar Glass Effect on Scroll
+        window.addEventListener("scroll", function() {
+            var navbar = document.getElementById("navbar");
+            if (window.scrollY > 20) {
+                navbar.classList.add("glass", "border-b", "border-white/10");
+                navbar.classList.remove("border-transparent");
+            } else {
+                navbar.classList.remove("glass", "border-b", "border-white/10");
+                navbar.classList.add("border-transparent");
+            }
+        });
+
+        // Contact Popup Logic
+        function showContactPopup() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Timeout to allow DOM to update before triggering transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.glass').classList.remove('scale-95');
+                modal.querySelector('.glass').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeContactPopup() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('.glass').classList.remove('scale-100');
+            modal.querySelector('.glass').classList.add('scale-95');
+            
+            // Wait for transition to finish before hiding
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // Close modal when clicking outside the box
+        document.getElementById('contactModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactPopup();
+            }
+        });
+    </script>
+</body>
+</html>
